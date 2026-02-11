@@ -1,0 +1,23 @@
+{
+  "name": "dep-tree",
+  "version": "0.1.0",
+  "description": "Trace import/require dependencies and visualize the dependency graph",
+  "main": "src/index.js",
+  "bin": {
+    "dep-tree": "src/cli.js"
+  },
+  "scripts": {
+    "test": "node --test tests/"
+  },
+  "keywords": [
+    "dependency",
+    "graph",
+    "imports",
+    "analyzer",
+    "cli"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  }
+}
