@@ -1,5 +1,7 @@
 # dep-tree
 
+![Tests](https://github.com/Taru0208/dep-tree/actions/workflows/test.yml/badge.svg)
+
 Trace import/require dependencies and visualize the dependency graph.
 
 Supports JavaScript, TypeScript, and Python. No configuration needed — just point it at a directory.
