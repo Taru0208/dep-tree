@@ -7,7 +7,7 @@
     "dep-tree": "src/cli.js"
   },
   "scripts": {
-    "test": "node --test tests/"
+    "test": "node --test tests/*.test.js"
   },
   "keywords": [
     "dependency",
