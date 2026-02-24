@@ -30,9 +30,22 @@ function detectLanguage(filePath) {
  */
 function resolveLocal(specifier, fromFile, rootDir) {
   const dir = path.dirname(fromFile);
-  const target = path.resolve(dir, specifier);
   const lang = detectLanguage(fromFile);
   const exts = lang ? EXTENSIONS[lang] : [];
+
+  // Python relative imports: .api -> ./api, ..utils -> ../utils
+  let resolved = specifier;
+  if (lang === 'python' && specifier.startsWith('.')) {
+    const match = specifier.match(/^(\.+)(.*)/);
+    if (match) {
+      const dots = match[1];
+      const rest = match[2].replace(/\./g, '/');
+      const prefix = dots.length === 1 ? './' : '../'.repeat(dots.length - 1);
+      resolved = prefix + rest;
+    }
+  }
+
+  const target = path.resolve(dir, resolved);
 
   // Try exact path
   if (fs.existsSync(target) && fs.statSync(target).isFile()) {
@@ -49,10 +62,14 @@ function resolveLocal(specifier, fromFile, rootDir) {
 
   // Try as directory with index file
   if (fs.existsSync(target) && fs.statSync(target).isDirectory()) {
-    for (const ext of exts) {
-      const indexFile = path.join(target, 'index' + ext);
-      if (fs.existsSync(indexFile)) {
-        return path.relative(rootDir, indexFile);
+    // Python uses __init__.py, JS uses index.{js,ts,...}
+    const indexNames = lang === 'python' ? ['__init__'] : ['index'];
+    for (const indexName of indexNames) {
+      for (const ext of exts) {
+        const indexFile = path.join(target, indexName + ext);
+        if (fs.existsSync(indexFile)) {
+          return path.relative(rootDir, indexFile);
+        }
       }
     }
   }
